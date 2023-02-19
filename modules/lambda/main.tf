@@ -17,3 +17,25 @@ resource "aws_lambda_function" "first_lambda" {
     starting_position = "LATEST"
   }
 }
+resource "aws_iam_policy" "lambda_policy" {
+  name = "lambda_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:DescribeTable",
+        ],
+        Effect = "Allow",
+        Resource = var.db_table
+      }
+      {
+        Action   = "s3:*"
+        Effect   = "Allow"
+        Resource = var.s3_bucket
+      }
+    ]
+  })
+  }
