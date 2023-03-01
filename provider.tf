@@ -6,6 +6,9 @@ region = var.region
 module "s3" {
   source = "./modules/s3"
 }
+module "dynamodb" {
+  source = "./modules/dynamodb"
+}
 module "lambda" {
   source = "./modules/lambda"
   event_s3 = module.s3.s3_arn
