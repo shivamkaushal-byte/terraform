@@ -12,7 +12,7 @@ resource "aws_lambda_function" "first_lambda" {
       }
   }
   event_source_mapping {
-    event_source_arn = var.s3_bucket
+    event_source_arn = var.event_s3
     starting_position = "LATEST"
   }
 }
