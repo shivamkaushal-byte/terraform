@@ -11,11 +11,12 @@ resource "aws_lambda_function" "first_lambda" {
         TABLE_NAME = var.db_table
       }
   }
-  event_source_mapping {
-    event_source_arn = var.event_s3
-    starting_position = "LATEST"
   }
-}
+  resource "aws_lambda_event_source_mapping" "s3_to_lambda" {
+    event_source_arn = var.event_s3
+    function_name    = aws_lambda_function.first_lambda.arn
+  }
+
 resource "aws_iam_policy" "lambda_policy" {
   name = "lambda_policy"
 
@@ -55,6 +56,7 @@ resource "aws_iam_policy" "lambda_policy" {
   })
   }
   resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
+  name = "Lambda_policy_attachment"
   policy_arn = aws_iam_policy.lambda_policy.arn
   roles      = [aws_iam_role.first_lambda_role.name]
 }
