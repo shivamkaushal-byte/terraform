@@ -1,19 +1,18 @@
 resource "aws_lambda_function" "first_lambda" {
   function_name    = "first_lambda"
-  filename         = "../python/python_lambda.zip"
+  filename         = "../python/python_lambda.py"
   role             = aws_iam_role.first_lambda_role.arn
   handler          = "python_lambda.lambda_handler"
   runtime          = "python3.7"
   timeout          = 30
   memory_size      = 128
-  source_code_hash = filebase64sha256("python_lambda.zip")
   environment {
       variables = {
         TABLE_NAME = var.db_table
       }
   }
   event_source_mapping {
-    event_source_arn = var.event_s3
+    event_source_arn = var.s3_bucket
     starting_position = "LATEST"
   }
 }
@@ -56,7 +55,6 @@ resource "aws_iam_policy" "lambda_policy" {
   })
   }
   resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
-  name       = "lambda_policy_attachment"
   policy_arn = aws_iam_policy.lambda_policy.arn
   roles      = [aws_iam_role.first_lambda_role.name]
 }
