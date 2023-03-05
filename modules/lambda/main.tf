@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "first_lambda" {
   function_name    = "first_lambda"
   filename         = "../python/python_lambda.zip"
-  role             = aws_iam_role.iam_lambda_role.arn
+  role             = aws_iam_role.first_lambda_role.arn
   handler          = "python_lambda.lambda_handler"
   runtime          = "python3.7"
   timeout          = 30
@@ -9,7 +9,7 @@ resource "aws_lambda_function" "first_lambda" {
   source_code_hash = filebase64sha256("python_lambda.zip")
   environment {
       variables = {
-        TABLE_NAME = aws_dynamodb_table.lambda_table.name
+        TABLE_NAME = var.db_table
       }
   }
   event_source_mapping {
@@ -56,6 +56,7 @@ resource "aws_iam_policy" "lambda_policy" {
   })
   }
   resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
+  name       = "lambda_policy_attachment"
   policy_arn = aws_iam_policy.lambda_policy.arn
   roles      = [aws_iam_role.first_lambda_role.name]
 }
